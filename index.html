@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dolmalabz tracker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+      background: #f4f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .card {
+      max-width: 1200px;
+      width: 100%;
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.15);
+      padding: 2rem 2rem 2.2rem;
+    }
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    h1 span {
+      background: #e9eef3;
+      font-size: 0.9rem;
+      font-weight: 400;
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      color: #334155;
+      margin-left: 0.75rem;
+    }
+
+    /* --- input row --- */
+    .input-panel {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f8fafd;
+      padding: 1rem 1rem;
+      border-radius: 24px;
+      margin-bottom: 1rem;
+      border: 1px solid #e2e8f0;
+    }
+    .input-box {
+      background: white;
+      border: 1px solid #dde3e9;
+      border-radius: 18px;
+      padding: 0.1rem 1rem;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      flex: 1 1 140px;
+      transition: 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .input-box:focus-within {
+      border-color: #3b7cff;
+      box-shadow: 0 0 0 4px rgba(59,124,255,0.15);
+    }
+    .input-box input, .input-box select {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+      font-weight: 350;
+      color: #0f1825;
+      outline: none;
+      padding: 0.4rem 0;
+    }
+    .input-box select {
+      cursor: pointer;
+    }
+    .input-box input::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+    .input-box input[type="date"] {
+      color-scheme: light;
+    }
+
+    /* save button */
+    .save-btn {
+      background: #1f2b48;
+      border: none;
+      border-radius: 40px;
+      height: 44px;
+      padding: 0 2.3rem;
+      color: white;
+      font-weight: 550;
+      font-size: 1.05rem;
+      letter-spacing: 0.2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+      border: 1px solid #152238;
+    }
+    .save-btn:hover {
+      background: #2b3b5e;
+      transform: scale(1.01);
+    }
+
+    /* date filter boxes */
+    .date-filter-boxes {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: #eef3fc;
+      padding: 0.3rem 1rem 0.3rem 1.2rem;
+      border-radius: 40px;
+      border: 1px solid #cbd9ec;
+      margin-left: auto;
+    }
+    .date-filter-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .date-filter-item span {
+      color: #2d3f60;
+      font-weight: 520;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .date-filter-item input[type="date"] {
+      border: 1px solid #c0d0e8;
+      border-radius: 30px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      background: white;
+      color: #1f2b48;
+      outline: none;
+      transition: 0.1s;
+      cursor: pointer;
+      width: 120px;
+    }
+    .date-filter-item input[type="date"]:focus {
+      border-color: #3b7cff;
+      box-shadow: 0 0 0 3px rgba(59,124,255,0.15);
+    }
+    .apply-date-btn {
+      background: #2f4b8a;
+      border: none;
+      border-radius: 30px;
+      padding: 0.4rem 1.2rem;
+      color: white;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.15s;
+      white-space: nowrap;
+      border: 1px solid #1f3a66;
+    }
+    .apply-date-btn:hover {
+      background: #3e5fa3;
+    }
+
+    /* filter bar (two tick boxes) */
+    .filter-section {
+      display: flex;
+      align-items: center;
+      gap: 2.2rem;
+      margin-bottom: 1.7rem;
+      background: #ffffff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 60px;
+      border: 1px solid #dee7ef;
+      width: fit-content;
+    }
+    .filter-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 480;
+      color: #1e2a44;
+      cursor: pointer;
+    }
+    .filter-check input[type="checkbox"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: #2f4b8a;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* --- table area --- */
+    .table-wrapper {
+      border-radius: 24px;
+      border: 1px solid #e6edf5;
+      overflow: auto;
+      background: white;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.02);
+      margin-bottom: 1.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+    th {
+      background: #f2f6fb;
+      color: #1f2a41;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 1.1rem 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid #cfddee;
+    }
+    td {
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid #e9eef3;
+      color: #1b2536;
+      font-size: 0.98rem;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .type-badge {
+      display: inline-block;
+      padding: 0.3rem 1.1rem;
+      border-radius: 50px;
+      font-weight: 530;
+      font-size: 0.85rem;
+      background: #eef3fa;
+      color: #1f2a3f;
+    }
+    .type-badge.income {
+      background: #57e00d;
+      color: #070808;
+    }
+    .type-badge.expense {
+      background: #e00d18;
+      color: #faf7f8;
+    }
+    .amount-positive {
+      font-weight: 550;
+      letter-spacing: 0.2px;
+    }
+    .empty-row td {
+      padding: 3rem 1rem;
+      text-align: center;
+      color: #8094a8;
+      font-style: italic;
+    }
+    .delete-btn {
+      background: none;
+      border: 1px solid #d7e0e9;
+      border-radius: 30px;
+      padding: 0.25rem 0.9rem;
+      font-size: 0.8rem;
+      color: #5f6f84;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .delete-btn:hover {
+      background: #f1f5f9;
+      border-color: #b1c2d8;
+      color: #0b1a32;
+    }
+
+    /* BOTTOM SECTION — two small boxes on left, total amount + excel button */
+    .bottom-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .stats-mini {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .stat-mini-box {
+      background: #f0f5fe;
+      border-radius: 40px;
+      padding: 0.65rem 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 2px 8px rgba(0,20,40,0.04);
+      border: 1px solid #d3e0f2;
+    }
+    .stat-mini-label {
+      font-weight: 520;
+      color: #2b3f60;
+      font-size: 0.95rem;
+      letter-spacing: 0.2px;
+    }
+    .stat-mini-value {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #1f2b48;
+    }
+    .stat-mini-box.income-box .stat-mini-value {
+      color: #14633b;
+    }
+    .stat-mini-box.expense-box .stat-mini-value {
+      color: #b13e3e;
+    }
+
+    /* total + export row */
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .total-amount-box {
+      background: #1f2b48;
+      border-radius: 60px;
+      padding: 0.4rem 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 4px 12px rgba(0,20,50,0.15);
+    }
+    .total-label {
+      color: #a3c6ff;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      font-size: 1.1rem;
+    }
+    .total-value {
+      color: white;
+      font-weight: 700;
+      font-size: 1.7rem;
+      letter-spacing: -0.5px;
+    }
+
+    /* 🆕 EXCEL BUTTON — as a distinct box */
+    .excel-box {
+      background: #1f7b4c;        /* fresh green */
+      border-radius: 60px;
+      padding: 0.4rem 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      box-shadow: 0 4px 12px rgba(22, 90, 50, 0.2);
+      border: 1px solid #0b5e32;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .excel-box:hover {
+      background: #2a9d64;
+      transform: scale(1.02);
+    }
+    .excel-label {
+      color: white;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      font-size: 1.1rem;
+    }
+    .excel-icon {
+      font-size: 1.3rem;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+    }
+
+    /* small footer */
+    .storage-note {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: #5d738b;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+      border-top: 1px dashed #d0dfee;
+      padding-top: 1.2rem;
+    }
+    .clear-storage {
+      background: transparent;
+      border: 1px solid #cddae9;
+      border-radius: 30px;
+      padding: 0.3rem 1.3rem;
+      cursor: pointer;
+      color: #3d506e;
+      font-size: 0.8rem;
+    }
+    .clear-storage:hover {
+      background: #f0f4fc;
+    }
+
+    /* Password modal styles */
+    .password-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .password-modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.3);
+      width: 320px;
+      text-align: center;
+    }
+    
+    .modal-content h3 {
+      margin-bottom: 1rem;
+      color: #1e293b;
+    }
+    
+    .modal-content input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #dde3e9;
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+    }
+    
+    .modal-content input:focus {
+      border-color: #3b7cff;
+      box-shadow: 0 0 0 3px rgba(59,124,255,0.15);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    
+    .modal-buttons button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.1s;
+    }
+    
+    .modal-submit {
+      background: #1f2b48;
+      color: white;
+    }
+    
+    .modal-submit:hover {
+      background: #2b3b5e;
+    }
+    
+    .modal-cancel {
+      background: #eef3fa;
+      color: #1e293b;
+    }
+    
+    .modal-cancel:hover {
+      background: #e2e8f0;
+    }
+    
+    .error-message {
+      color: #b33a3a;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      display: none;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+
+    /* ============================= */
+/* 📱 MOBILE RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+  body {
+    padding: 0.6rem;
+  }
+
+  .card {
+    padding: 1.2rem;
+    border-radius: 20px;
+  }
+
+  h1 {
+    font-size: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  h1 span {
+    margin-left: 0;
+  }
+
+  /* INPUT PANEL STACK */
+  .input-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+    padding: 1rem;
+  }
+
+  .input-box {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .save-btn {
+    width: 100%;
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  /* FILTER CHECKBOX SECTION */
+  .filter-section {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 20px;
+    padding: 0.7rem 1rem;
+    gap: 1rem;
+  }
+
+  /* DATE FILTER STACK */
+  .date-filter-boxes {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    border-radius: 20px;
+    padding: 0.8rem;
+    gap: 0.6rem;
+  }
+
+  .date-filter-item {
+    justify-content: space-between;
+  }
+
+  .date-filter-item input[type="date"] {
+    width: 100%;
+  }
+
+  .apply-date-btn {
+    width: 100%;
+    padding: 0.6rem;
+  }
+
+  /* TABLE FIX */
+  .table-wrapper {
+    border-radius: 16px;
+  }
+
+  table {
+    min-width: 600px; /* allow scroll */
+  }
+
+  th, td {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  /* BOTTOM SECTION STACK */
+  .bottom-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .stats-mini {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.8rem;
+  }
+
+  .stat-mini-box {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 20px;
+  }
+
+  .right-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.8rem;
+  }
+
+  .total-amount-box {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 20px;
+  }
+
+  .excel-box {
+    width: 100%;
+    justify-content: center;
+    border-radius: 20px;
+  }
+
+  /* FOOTER */
+  .storage-note {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .clear-storage {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* MODAL */
+  .modal-content {
+    width: 90%;
+    padding: 1.5rem;
+    border-radius: 18px;
+  }
+}
+
+/* ============================= */
+/* 📲 TABLET RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 1024px) and (min-width: 769px) {
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .input-panel {
+    gap: 0.8rem;
+  }
+
+  .input-box {
+    flex: 1 1 45%;
+  }
+
+  .save-btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .filter-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .date-filter-boxes {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .bottom-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .stats-mini {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .right-actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  table {
+    min-width: 800px;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>📋 DOLMA LABZ <span style="color: darkolivegreen;">Kakkanchery</span></h1> 
+    <!-- BOTTOM SECTION with ₹ symbol everywhere + NEW EXCEL BUTTON -->
+    <div class="bottom-section">
+      <!-- left side mini boxes: total income & total expense (₹) -->
+      <div class="stats-mini">
+        <div class="stat-mini-box income-box" id="totalIncomeBox">
+          <span class="stat-mini-label">💰 Total income</span>
+          <span class="stat-mini-value" id="totalIncomeValue">₹0.00</span>
+        </div>
+        <div class="stat-mini-box expense-box" id="totalExpenseBox">
+          <span class="stat-mini-label">💸 Total expense</span>
+          <span class="stat-mini-value" id="totalExpenseValue">₹0.00</span>
+        </div>
+      </div>
+      
+      <!-- right side: total amount + excel export button  (both boxes) -->
+      <div class="right-actions">
+        <div class="total-amount-box" id="totalAmountBox">
+          <span class="total-label">BALANCE AMOUNT</span>
+          <span class="total-value" id="totalAmountValue">₹0.00</span>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- input row -->
+    <div class="input-panel">
+      <div class="input-box">
+        <input type="date" id="dateInput" value="2026-03-02">
+      </div>
+      <div class="input-box">
+        <input type="text" id="nameInput" placeholder="enter name ..." autocomplete="off">
+      </div>
+      <div class="input-box">
+        <input type="number" id="amountInput" placeholder="enter amount" step="0.01" min="0">
+      </div>
+      <div class="input-box">
+        <select id="typeSelect">
+          <option value="expense" selected>💸 expense</option>
+          <option value="income">💰 income</option>
+        </select>
+      </div>
+      <button class="save-btn" id="saveBtn">➕ save entry</button>
+      
+      <!-- filter checkboxes -->
+      <div class="filter-section">
+        <label class="filter-check">
+          <input type="checkbox" id="filterExpense" checked> 💸 show expense
+        </label>
+        <label class="filter-check">
+          <input type="checkbox" id="filterIncome" checked> 💰 show income
+        </label>
+      </div>
+      <!-- date filters -->
+      <div class="date-filter-boxes">
+        <div class="date-filter-item">
+          <span>📅 from</span>
+          <input type="date" id="dateFromFilter">
+        </div>
+        <div class="date-filter-item">
+          <span>📅 to</span>
+          <input type="date" id="dateToFilter">
+        </div>
+        <button class="apply-date-btn" id="applyDateFilter">apply</button>
+      </div>
+    </div>
+
+    <!-- table -->
+    <div class="table-wrapper">
+      <table id="entriesTable">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>📅 date</th>
+            <th>📛 name</th>
+            <th>💰 amount (₹)</th>
+            <th>📌 type</th>
+            <th>⚙️</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- injected -->
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- footer -->
+    <div class="storage-note">
+      <span>🟢 Data stored in Google Sheets</span>
+      <button class="clear-storage" id="clearStorageBtn" title="clear all entries">🗑️ clear all</button>
+    </div>
+    <!-- 🆕 CONVERT BOX (excel export) -->
+    <div class="excel-box" id="excelExportBtn">
+      <span class="excel-icon">📥</span>
+      <span class="excel-label">convert to excel</span>
+    </div>
+  </div>
+
+
+  <!-- Password Modal -->
+  <div class="password-modal" id="passwordModal">
+    <div class="modal-content">
+      <h3>🔒 Enter Password</h3>
+      <input type="password" id="passwordInput" placeholder="Enter password">
+      <div class="error-message" id="passwordError">Incorrect password</div>
+      <div class="modal-buttons">
+        <button class="modal-submit" id="modalSubmit">Submit</button>
+        <button class="modal-cancel" id="modalCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function() {
+
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcQAUqEDPve_5Ago4DLZ8j_0rCl5LCtpZO2Gd8-UhbO-0kqyIBcKeEog9FHB-_79De/exec"; 
+      const ADMIN_PASSWORD = "12345";
+
+      let entries = [];
+      let activeDateFrom = null;
+      let activeDateTo = null;
+      let pendingAction = null;
+      let pendingId = null;
+
+// ================= ELEMENTS =================
+      const dateInput = document.getElementById('dateInput');
+      const nameInput = document.getElementById('nameInput');
+      const amountInput = document.getElementById('amountInput');
+      const typeSelect = document.getElementById('typeSelect');
+      const saveBtn = document.getElementById('saveBtn');
+      const tableBody = document.getElementById('tableBody');
+      const excelExportBtn = document.getElementById('excelExportBtn');
+      const clearBtn = document.getElementById('clearStorageBtn');
+
+      const totalAmountValue = document.getElementById('totalAmountValue');
+      const totalIncomeValue = document.getElementById('totalIncomeValue');
+      const totalExpenseValue = document.getElementById('totalExpenseValue');
+
+      const filterExpense = document.getElementById('filterExpense');
+      const filterIncome = document.getElementById('filterIncome');
+      const dateFromFilter = document.getElementById('dateFromFilter');
+      const dateToFilter = document.getElementById('dateToFilter');
+      const applyDateFilter = document.getElementById('applyDateFilter');
+
+      const passwordModal = document.getElementById("passwordModal");
+      const passwordInput = document.getElementById("passwordInput");
+      const passwordError = document.getElementById("passwordError");
+      const modalSubmit = document.getElementById("modalSubmit");
+      const modalCancel = document.getElementById("modalCancel");
+
+// ================= LOAD DATA =================
+      function loadData() {
+        fetch(SCRIPT_URL)
+        .then(res => res.json())
+        .then(data => {
+      entries = data.reverse(); // latest first
+      renderTable();
+    })
+        .catch(err => console.error("Load Error:", err));
+      }
+
+// ================= ADD ENTRY =================
+      function addEntry() {
+
+        const date = dateInput.value;
+        const name = nameInput.value.trim();
+        const amount = parseFloat(amountInput.value);
+        const type = typeSelect.value;
+
+        if (!date || !name || isNaN(amount)) {
+          alert("Fill all fields");
+          return;
+        }
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "add",
+            date,
+            name,
+            amount,
+            type
+          })
+        })
+        .then(res => res.json())
+        .then(() => {
+          nameInput.value = "";
+          amountInput.value = "";
+          loadData();
+        });
+      }
+
+// ================= DELETE =================
+      function deleteEntry(id) {
+        pendingAction = "delete";
+        pendingId = id;
+        passwordModal.style.display = "flex";
+      }
+
+      function performDelete(id) {
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "delete",
+            id: id
+          })
+        })
+        .then(res => res.json())
+        .then(() => loadData());
+      }
+
+// ================= CLEAR ALL =================
+      function clearAll() {
+        pendingAction = "clearAll";
+        passwordModal.style.display = "flex";
+      }
+
+      function performClearAll() {
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "clearAll"
+          })
+        })
+        .then(res => res.json())
+        .then(() => loadData());
+      }
+
+// ================= PASSWORD =================
+      modalSubmit.addEventListener("click", function() {
+
+        if (passwordInput.value !== ADMIN_PASSWORD) {
+          passwordError.style.display = "block";
+          return;
+        }
+
+        passwordModal.style.display = "none";
+        passwordInput.value = "";
+        passwordError.style.display = "none";
+
+        if (pendingAction === "delete") {
+          performDelete(pendingId);
+        }
+
+        if (pendingAction === "clearAll") {
+          performClearAll();
+        }
+      });
+
+      modalCancel.addEventListener("click", () => {
+        passwordModal.style.display = "none";
+      });
+
+// ================= TOTALS =================
+      function calculateTotals(filtered) {
+
+        let income = 0;
+        let expense = 0;
+
+        filtered.forEach(e => {
+          if (e.type === "income") income += Number(e.amount);
+          else expense += Number(e.amount);
+        });
+
+        totalIncomeValue.textContent = "₹" + income.toFixed(2);
+        totalExpenseValue.textContent = "₹" + expense.toFixed(2);
+        totalAmountValue.textContent = "₹" + (income - expense).toFixed(2);
+      }
+
+// ================= RENDER TABLE =================
+      function renderTable() {
+
+        const showExpense = filterExpense.checked;
+        const showIncome = filterIncome.checked;
+
+        let filtered = entries.filter(e => {
+
+          if (!showExpense && e.type === "expense") return false;
+          if (!showIncome && e.type === "income") return false;
+
+          if (activeDateFrom && e.date < activeDateFrom) return false;
+          if (activeDateTo && e.date > activeDateTo) return false;
+
+          return true;
+        });
+
+        calculateTotals(filtered);
+
+        tableBody.innerHTML = "";
+
+        if (filtered.length === 0) {
+          tableBody.innerHTML =
+        `<tr><td colspan="6">No entries found</td></tr>`;
+        return;
+      }
+
+      filtered.forEach((entry, index) => {
+
+    // FIX DATE FORMAT
+        const cleanDate = entry.date
+        ? entry.date.split("T")[0]
+        : "";
+
+        tableBody.innerHTML += `
+  <tr>
+    <td>${index + 1}</td>
+    <td>${cleanDate}</td>
+    <td>${entry.name}</td>
+    <td>₹${Number(entry.amount).toFixed(2)}</td>
+    <td>
+      <span class="type-badge ${entry.type}">
+        ${entry.type}
+      </span>
+    </td>
+    <td>
+      <button onclick="deleteEntry('${entry.id}')">Delete</button>
+    </td>
+  </tr>
+        `;
+      });
+    }
+
+// ================= DATE FILTER =================
+    function applyDateFilterHandler() {
+      activeDateFrom = dateFromFilter.value || null;
+      activeDateTo = dateToFilter.value || null;
+      renderTable();
+    }
+
+// ================= EXPORT EXCEL =================
+    function exportFilteredToExcel() {
+
+      const headers = ['ID','Date','Name','Amount','Type'];
+
+      const rows = [];
+
+      entries.forEach((e, index) => {
+        rows.push([
+          index + 1,
+          e.date.split("T")[0],
+          `"${e.name}"`,
+          e.amount,
+          e.type
+        ].join(','));
+      });
+
+      const csv = [headers.join(','), ...rows].join('\n');
+
+      const blob = new Blob([csv], {
+        type: 'application/vnd.ms-excel'
+      });
+
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = "finance_data.xls";
+      link.click();
+    }
+
+// ================= EVENTS =================
+    saveBtn.addEventListener("click", addEntry);
+    clearBtn.addEventListener("click", clearAll);
+    excelExportBtn.addEventListener("click", exportFilteredToExcel);
+    applyDateFilter.addEventListener("click", applyDateFilterHandler);
+    filterExpense.addEventListener("change", renderTable);
+    filterIncome.addEventListener("change", renderTable);
+
+    window.deleteEntry = deleteEntry;
+
+// ================= INIT =================
+    dateInput.value = new Date().toISOString().slice(0,10);
+    loadData();
+    // focus on name input when page opens
+    nameInput.focus();
+
+    nameInput.addEventListener("input", function() {
+      this.value = this.value.toUpperCase();
+    });
+  // ENTER KEY NAVIGATION
+
+    nameInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        amountInput.focus();
+      }
+    });
+
+    amountInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        typeSelect.focus();
+      }
+    });
+
+    typeSelect.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        saveBtn.focus();
+      }
+    });
+
+    saveBtn.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        saveBtn.click();
+      }
+    });
+
+
+  })();
+
+
+</script>
+<script>
+
+document.getElementById("saveBtn").addEventListener("click", saveEntry);
+
+// focus when page opens
+window.onload = function() {
+    document.getElementById("nameInput").focus();
+};
+
+function saveEntry() {
+
+    let input = document.getElementById("nameInput");
+    let name = input.value;
+
+    console.log("Saved:", name);
+
+    // clear input
+    input.value = "";
+
+    // focus again on name box
+    input.focus();
+
+}
+
+</script>
+</body>
+</html>
