@@ -1140,5 +1140,23 @@ function saveEntry() {
 }
 
 </script>
+<script>
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    alert("Right-click is disabled on this page.");
+});
+  document.onkeydown = function(e) {
+    // Disable F12
+    if(e.keyCode == 123) return false;
+
+    // Disable Ctrl+Shift+I (Inspect)
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+
+    // Disable Ctrl+U (View Source)
+    if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+};
+</script>
+
 </body>
+
 </html>
